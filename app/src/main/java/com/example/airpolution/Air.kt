@@ -1,5 +1,7 @@
 package com.example.airpolution
 
-class Air {
-    val air:String="air"
-}
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class Air : Application()
