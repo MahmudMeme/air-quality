@@ -10,26 +10,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val reposirotry: Repository) : ViewModel() {
-    fun setTextWithValues(): String {
+class HomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+    private val _text = MutableLiveData<String>()
+    val text: LiveData<String> get() = _text
+
+    fun fetchAirValues() {
         viewModelScope.launch {
-            val response = reposirotry.getAirValues()
-            val city = response.cityName
-            val values = response.values
+            try {
+                val response = repository.getAirValues()
+                val city = response.cityName
+                val values = response.values
 
-            var text = StringBuilder()
-            text.append("gtradot ")
-            text.append(city)
-            text.append(" ima vrednosti ")
-            text.append(values.pm10.plus(" pm10 "))
-            text.append(values.temperature.plus(" temperatur "))
+                val text = StringBuilder()
+                text.append("Gradot ")
+                text.append(city)
+                text.append(" ima vrednosti ")
+                text.append(values.pm10.plus(" pm10 "))
+                text.append(values.temperature.plus(" temperatur "))
 
+                _text.value = text.toString()
+            } catch (e: Exception) {
+                _text.value = "Failed to fetch air values: ${e.message}"
+            }
         }
-        return text.toString()
     }
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
 }

@@ -4,6 +4,8 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface AirValuesDBApi {
-    @GET
+    //    @GET
+//    suspend fun getAirValues(): Response<ValuesGetResponse>
+    @GET("overall/")
     suspend fun getAirValues(): Response<ValuesGetResponse>
 }
