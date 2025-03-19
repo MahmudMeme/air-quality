@@ -14,10 +14,10 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _text = MutableLiveData<String>()
     val text: LiveData<String> get() = _text
 
-    fun fetchAirValues() {
+    fun fetchAirValues(cityName: String) {
         viewModelScope.launch {
             try {
-                val response = repository.getAirValues()
+                val response = repository.getAirValues(cityName)
                 val city = response.cityName
                 val values = response.values
 

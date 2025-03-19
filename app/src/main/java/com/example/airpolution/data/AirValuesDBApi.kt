@@ -6,6 +6,8 @@ import retrofit2.http.GET
 interface AirValuesDBApi {
     //    @GET
 //    suspend fun getAirValues(): Response<ValuesGetResponse>
-    @GET("overall/")
+//    @GET("overall/")
+//    suspend fun getAirValues(): Response<ValuesGetResponse>
+    @GET("rest/overall/")
     suspend fun getAirValues(): Response<ValuesGetResponse>
 }

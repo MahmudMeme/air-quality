@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.example.airpolution.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +36,11 @@ class HomeFragment : Fragment() {
 
 
         binding.btnRefresh.setOnClickListener {
-            homeViewModel.fetchAirValues()
+            var cityName: String = binding.edCityName.text.toString()
+            if (cityName.isEmpty()) {
+                cityName = "skopje"
+            }
+            homeViewModel.fetchAirValues(cityName)
         }
 
         return root
