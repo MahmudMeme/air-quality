@@ -1,9 +1,13 @@
 package com.example.airpolution.ui.home
 
+//noinspection SuspiciousImport
+import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.airpolution.databinding.FragmentHomeBinding
@@ -30,20 +34,52 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "Loading..."
 
+        setupSpinner()
+
         homeViewModel.text.observe(viewLifecycleOwner) { text ->
             binding.textHome.text = text
         }
 
 
-        binding.btnRefresh.setOnClickListener {
-            var cityName: String = binding.edCityName.text.toString()
-            if (cityName.isEmpty()) {
-                cityName = "skopje"
+        return root
+    }
+
+    private fun setupSpinner() {
+        val cities = listOf(
+            "skopje",
+            "ohrid",
+            "bitola",
+            "tetovo",
+            "strumica",
+            "gostivar"
+        )
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_spinner_item,
+            cities
+        ).apply {
+            setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        }
+        binding.cityList.adapter = adapter
+
+        binding.cityList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedCityName = cities[position]
+                homeViewModel.fetchAirValues(selectedCityName)
             }
-            homeViewModel.fetchAirValues(cityName)
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //
+                //
+            }
+
         }
 
-        return root
     }
 
     override fun onDestroyView() {

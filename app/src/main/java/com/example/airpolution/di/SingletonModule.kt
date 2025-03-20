@@ -55,7 +55,7 @@ abstract class SingletonModule {
 
         @Provides
         @Singleton
-        fun provideAirValuesDBApi(okHttpClient: OkHttpClient): Retrofit {
+        fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
 //            val BASE_URL = "https://skopje.pulse.eco/rest/overall/"
             val BASE_URL = "https://placeholder.pulse.eco/"
             return Retrofit.Builder()
