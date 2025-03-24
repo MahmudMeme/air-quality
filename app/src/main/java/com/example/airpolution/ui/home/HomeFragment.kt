@@ -2,6 +2,7 @@ package com.example.airpolution.ui.home
 
 //noinspection SuspiciousImport
 import android.R
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.airpolution.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -23,6 +28,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val homeViewModel: HomeViewModel by viewModels()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,15 +42,24 @@ class HomeFragment : Fragment() {
 
         setupSpinner()
 
-        homeViewModel.text.observe(viewLifecycleOwner) { text ->
-            binding.textHome.text = text
+        /*
+        error: with out viewLifecycleOwner =
+        The repeatOnLifecycle API should be used with viewLifecycleOwner
+        with comment above and with out viewLifecycleOwner it does not shoe error
+         */
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.uiState.collect { state ->
+                    binding.textHome.text = state.text
+                }
+            }
         }
-
 
         return root
     }
 
     private fun setupSpinner() {
+        //todo: take all cities from viewModel (repository)
         val cities = listOf(
             "skopje",
             "ohrid",
@@ -74,16 +89,14 @@ class HomeFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                //
-                //
             }
-
         }
 
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
+
     }
 }
