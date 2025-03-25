@@ -42,11 +42,7 @@ class HomeFragment : Fragment() {
 
         setupSpinner()
 
-        /*
-        error: with out viewLifecycleOwner =
-        The repeatOnLifecycle API should be used with viewLifecycleOwner
-        with comment above and with out viewLifecycleOwner it does not shoe error
-         */
+
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.uiState.collect { state ->
@@ -91,12 +87,10 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-
     }
 }

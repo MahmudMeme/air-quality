@@ -18,9 +18,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class SingletonModule {
 
-//    @Binds
-//    abstract fun bindRemoteDataSource(impl: RemoteAirValuesDataSourceImpl): RemoteAirValuesDataSource
-
     companion object {
 
         @Provides
@@ -38,7 +35,6 @@ abstract class SingletonModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build()
-            //.create(AirValuesDBApi::class.java)
         }
 
         @Provides
