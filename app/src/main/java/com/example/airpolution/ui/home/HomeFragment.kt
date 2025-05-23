@@ -40,7 +40,8 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "Loading..."
 
-        setupSpinner()
+        val citySP = homeViewModel.getDefaultCityFromSp(requireContext())
+        setupSpinner(citySP)
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -54,20 +55,19 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setupSpinner() {
-        //todo: take all cities from viewModel (repository)
-        val cities = listOf(
-            "skopje",
-            "ohrid",
-            "bitola",
-            "tetovo",
-            "strumica",
-            "gostivar"
-        )
+    private fun setupSpinner(citySp: String?) {
+
+        val allCities = resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
+        val orderedCities = if (citySp != null && allCities.contains(citySp)) {
+            listOf(citySp) + allCities.filter { it != citySp }
+        } else {
+            allCities
+        }
+
         val adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_spinner_item,
-            cities
+            orderedCities
         ).apply {
             setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         }
@@ -80,14 +80,30 @@ class HomeFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val selectedCityName = cities[position]
+                val selectedCityName = orderedCities[position]
                 homeViewModel.fetchAirValues(selectedCityName)
+                //homeViewModel.setTemporaryCity(requireContext(),selectedCityName)
+                val newOrderedCities =
+                    listOf(selectedCityName) + allCities.filter { it != selectedCityName }
+
+                adapter.clear()
+                adapter.addAll(newOrderedCities)
+                adapter.notifyDataSetChanged()
+
+                binding.cityList.setSelection(0)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        val citySp= homeViewModel.getTempCityFromSp(requireContext())
+//        setupSpinner(citySp)
+//    }
+
 
     override fun onDestroyView() {
         _binding = null

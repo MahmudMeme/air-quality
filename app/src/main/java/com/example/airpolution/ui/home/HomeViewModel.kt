@@ -1,5 +1,7 @@
 package com.example.airpolution.ui.home
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airpolution.data.Repository
@@ -45,6 +47,24 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
                 }
             }
         }
+    }
+    fun getDefaultCityFromSp(context: Context): String? {
+        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
+        val city = sp.getString("defaultCity", null)
+        city?.let { fetchAirValues(it) }
+        return city
+    }
+    fun setTemporaryCity(context: Context, city: String) {
+        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
+        val editor = sp.edit()
+        editor.putString("tempCity", city)
+        editor.apply()
+    }
+    fun getTempCityFromSp(context: Context): String? {
+        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
+        val city = sp.getString("tempCity", null)
+        city?.let { fetchAirValues(it) }
+        return city
     }
 
     private fun buildUrlForCity(cityName: String): String {
