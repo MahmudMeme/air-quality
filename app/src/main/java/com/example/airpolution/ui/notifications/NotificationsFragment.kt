@@ -28,7 +28,7 @@ class NotificationsFragment : Fragment() {
     private val notificationsViewModel: NotificationsViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         val notificationsViewModel = ViewModelProvider(this).get(NotificationsViewModel::class.java)
 
@@ -50,47 +50,53 @@ class NotificationsFragment : Fragment() {
 
     private fun setupSpinner() {
 
-        val allCities = resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
+        val allCities =
+            resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
 
-        val savedCity = notificationsViewModel.getDefaultCityFromSp(requireContext())
-
-        val orderedCities = if (savedCity != null && allCities.contains(savedCity)) {
-            listOf(savedCity) + allCities.filter { it != savedCity }
-        } else {
-            allCities
-        }
-
-        val adapter = ArrayAdapter(
-            requireContext(), R.layout.simple_spinner_item, orderedCities
-        ).apply {
-            setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        }
-        binding.cityListSetings.adapter = adapter
-
-        binding.cityListSetings.setSelection(0)
-
-        binding.cityListSetings.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                ) {
-
-                    val selectedCityName = orderedCities[position]
-                    notificationsViewModel.setDefaultCity(requireContext(), selectedCityName)
-                    val newOrderedCities =
-                        listOf(selectedCityName) + allCities.filter { it != selectedCityName }
-
-                    adapter.clear()
-                    adapter.addAll(newOrderedCities)
-                    adapter.notifyDataSetChanged()
-
-                    binding.cityListSetings.setSelection(0)
-
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            val savedCity = notificationsViewModel.getDefaultCityFromSp()
+            val orderedCities = if (savedCity != null && allCities.contains(savedCity)) {
+                listOf(savedCity) + allCities.filter { it != savedCity }
+            } else {
+                allCities
             }
+
+
+            val adapter = ArrayAdapter(
+                requireContext(), R.layout.simple_spinner_item, orderedCities
+            ).apply {
+                setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+            }
+            binding.cityListSetings.adapter = adapter
+
+            binding.cityListSetings.setSelection(0)
+
+            binding.cityListSetings.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?, view: View?, position: Int, id: Long,
+                    ) {
+
+                        val selectedCityName = orderedCities[position]
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            notificationsViewModel.setDefaultCity(selectedCityName)
+                        }
+
+                        val newOrderedCities =
+                            listOf(selectedCityName) + allCities.filter { it != selectedCityName }
+
+                        adapter.clear()
+                        adapter.addAll(newOrderedCities)
+                        adapter.notifyDataSetChanged()
+
+                        binding.cityListSetings.setSelection(0)
+
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                }
+        }
     }
 
     override fun onDestroyView() {

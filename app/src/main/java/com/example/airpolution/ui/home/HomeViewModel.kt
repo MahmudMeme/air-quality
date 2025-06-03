@@ -1,7 +1,5 @@
 package com.example.airpolution.ui.home
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airpolution.data.Repository
@@ -13,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HomeStateUI(
-    val text: String = ""
+    val text: String = "",
 )
 
 @HiltViewModel
@@ -48,23 +46,25 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             }
         }
     }
-    fun getDefaultCityFromSp(context: Context): String? {
-        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val city = sp.getString("defaultCity", null)
+
+     suspend fun getDefaultCityFromSp(): String? {
+        val city = repository.getDefaultCityFromSp()
         city?.let { fetchAirValues(it) }
         return city
     }
-    fun setTemporaryCity(context: Context, city: String) {
-        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val editor = sp.edit()
-        editor.putString("tempCity", city)
-        editor.apply()
+
+     suspend fun setTemporaryCity(city: String) {
+        repository.setTemporaryCity(city)
     }
-    fun getTempCityFromSp(context: Context): String? {
-        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val city = sp.getString("tempCity", null)
+
+     suspend fun getTempCityFromSp(): String? {
+        val city = repository.getTempCityFromSp()
         city?.let { fetchAirValues(it) }
         return city
+    }
+
+     suspend fun removeTempCityFromSp() {
+        repository.removeTempCityFromSp()
     }
 
     private fun buildUrlForCity(cityName: String): String {

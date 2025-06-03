@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -40,8 +40,15 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "Loading..."
 
-        val citySP = homeViewModel.getDefaultCityFromSp(requireContext())
-        setupSpinner(citySP)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val cityTemp: String? = homeViewModel.getTempCityFromSp()
+            val citySP = homeViewModel.getDefaultCityFromSp()
+            if (cityTemp == null) {
+                setupSpinner(citySP)
+            } else {
+                setupSpinner(cityTemp)
+            }
+        }
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -57,7 +64,8 @@ class HomeFragment : Fragment() {
 
     private fun setupSpinner(citySp: String?) {
 
-        val allCities = resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
+        val allCities =
+            resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
         val orderedCities = if (citySp != null && allCities.contains(citySp)) {
             listOf(citySp) + allCities.filter { it != citySp }
         } else {
@@ -78,11 +86,16 @@ class HomeFragment : Fragment() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long
+                id: Long,
             ) {
                 val selectedCityName = orderedCities[position]
                 homeViewModel.fetchAirValues(selectedCityName)
-                //homeViewModel.setTemporaryCity(requireContext(),selectedCityName)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    homeViewModel.setTemporaryCity(selectedCityName)
+                }
+
+
                 val newOrderedCities =
                     listOf(selectedCityName) + allCities.filter { it != selectedCityName }
 
@@ -98,15 +111,16 @@ class HomeFragment : Fragment() {
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        val citySp= homeViewModel.getTempCityFromSp(requireContext())
-//        setupSpinner(citySp)
-//    }
-
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        //ne vleguva vo ovoj metod bug??
+        viewLifecycleOwner.lifecycleScope.launch {
+            homeViewModel.removeTempCityFromSp()
+        }
+        super.onDestroy()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.airpolution.data
+package com.example.airpolution.data.remote
 
 class RemoteAirValuesDataSourceImpl(
     private val airValuesDBApi: AirValuesDBApi
