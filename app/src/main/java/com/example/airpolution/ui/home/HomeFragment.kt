@@ -40,15 +40,15 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "Loading..."
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val cityTemp: String? = homeViewModel.getTempCityFromSp()
-            val citySP = homeViewModel.getDefaultCityFromSp()
-            if (cityTemp == null) {
-                setupSpinner(citySP)
-            } else {
-                setupSpinner(cityTemp)
-            }
+
+        val cityTemp = homeViewModel.getTempCityFromSp()
+        val citySP = homeViewModel.getDefaultCityFromSp()
+        if (cityTemp == null) {
+            setupSpinner(citySP)
+        } else {
+            setupSpinner(cityTemp)
         }
+
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -91,9 +91,7 @@ class HomeFragment : Fragment() {
                 val selectedCityName = orderedCities[position]
                 homeViewModel.fetchAirValues(selectedCityName)
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    homeViewModel.setTemporaryCity(selectedCityName)
-                }
+                homeViewModel.setTemporaryCity(selectedCityName)
 
 
                 val newOrderedCities =
@@ -118,9 +116,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         //ne vleguva vo ovoj metod bug??
-        viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.removeTempCityFromSp()
-        }
+        homeViewModel.removeTempCityFromSp()
         super.onDestroy()
     }
 }

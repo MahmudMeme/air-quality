@@ -35,19 +35,4 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        val sp = application.getSharedPreferences("airCity", MODE_PRIVATE)
-        val editor = sp.edit()
-        editor.remove("tempCity")
-        editor.apply()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        val sp = application.getSharedPreferences("airCity", MODE_PRIVATE)
-        val editor = sp.edit()
-        editor.remove("tempCity")
-        editor.apply()
-    }
 }

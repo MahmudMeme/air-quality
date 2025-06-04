@@ -12,12 +12,14 @@ import javax.inject.Inject
 
 data class HomeStateUI(
     val text: String = "",
+    val city: String? = "",
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeStateUI())
     val uiState = _uiState.asStateFlow()
+    var cityDef:String?=null
 
     fun fetchAirValues(cityName: String) {
         viewModelScope.launch {
@@ -47,24 +49,31 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-     suspend fun getDefaultCityFromSp(): String? {
-        val city = repository.getDefaultCityFromSp()
-        city?.let { fetchAirValues(it) }
-        return city
+    fun getDefaultCityFromSp(): String? {
+        viewModelScope.launch {
+            val city = repository.getDefaultCityFromSp()
+            city?.let { fetchAirValues(it) }
+            _uiState.update { state ->
+                state.copy(city=city)
+            }
+            cityDef = city
+        }
+        return cityDef
     }
 
-     suspend fun setTemporaryCity(city: String) {
-        repository.setTemporaryCity(city)
+
+    fun setTemporaryCity(city: String) {
+        CityTemp.setCity(city)
     }
 
-     suspend fun getTempCityFromSp(): String? {
-        val city = repository.getTempCityFromSp()
-        city?.let { fetchAirValues(it) }
-        return city
+    fun getTempCityFromSp(): String? {
+        return CityTemp.getCity()
     }
 
-     suspend fun removeTempCityFromSp() {
-        repository.removeTempCityFromSp()
+    fun removeTempCityFromSp() {
+        viewModelScope.launch {
+            repository.getDefaultCityFromSp()?.let { CityTemp.setCity(it) }
+        }
     }
 
     private fun buildUrlForCity(cityName: String): String {

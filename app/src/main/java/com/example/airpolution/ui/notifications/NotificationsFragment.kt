@@ -53,8 +53,7 @@ class NotificationsFragment : Fragment() {
         val allCities =
             resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val savedCity = notificationsViewModel.getDefaultCityFromSp()
+        val savedCity = notificationsViewModel.getDefaultCityFromSp()
             val orderedCities = if (savedCity != null && allCities.contains(savedCity)) {
                 listOf(savedCity) + allCities.filter { it != savedCity }
             } else {
@@ -96,7 +95,7 @@ class NotificationsFragment : Fragment() {
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                     }
                 }
-        }
+
     }
 
     override fun onDestroyView() {

@@ -30,6 +30,6 @@ class Repository @Inject constructor(
     }
 
     suspend fun removeTempCityFromSp() {
-        return localDataSource.removeTempCityFromSp()
+         localDataSource.removeTempCityFromSp()
     }
 }
