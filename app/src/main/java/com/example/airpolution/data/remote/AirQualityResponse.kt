@@ -1,4 +1,4 @@
-package com.example.airpolution.data
+package com.example.airpolution.data.remote
 
 data class AirQualityResponse(
     val cityName: String,

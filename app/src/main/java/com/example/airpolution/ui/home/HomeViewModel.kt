@@ -1,7 +1,5 @@
 package com.example.airpolution.ui.home
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airpolution.data.Repository
@@ -13,7 +11,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HomeStateUI(
-    val text: String = ""
+    val text: String = "",
+    val cities: List<String> = emptyList(),
 )
 
 @HiltViewModel
@@ -48,27 +47,33 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             }
         }
     }
-    fun getDefaultCityFromSp(context: Context): String? {
-        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val city = sp.getString("defaultCity", null)
-        city?.let { fetchAirValues(it) }
-        return city
-    }
-    fun setTemporaryCity(context: Context, city: String) {
-        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val editor = sp.edit()
-        editor.putString("tempCity", city)
-        editor.apply()
-    }
-    fun getTempCityFromSp(context: Context): String? {
-        val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val city = sp.getString("tempCity", null)
-        city?.let { fetchAirValues(it) }
-        return city
-    }
 
     private fun buildUrlForCity(cityName: String): String {
         return "https://${cityName}.pulse.eco/rest/overall"
     }
 
+    fun initCities(cities: List<String>) {
+        viewModelScope.launch {
+            val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
+            city?.let { fetchAirValues(it) }
+            val orderedCities = if (city != null && cities.contains(city)) {
+                listOf(city) + cities.filter { it != city }
+            } else {
+                cities
+            }
+            _uiState.update { it.copy(cities = orderedCities) }
+        }
+    }
+
+    fun handleCitySelected(position: Int) {
+        val selectedCityName = uiState.value.cities[position]
+        fetchAirValues(selectedCityName)
+
+        CityTemp.setCity(selectedCityName)
+
+        val newOrderedCities =
+            listOf(selectedCityName) + uiState.value.cities.filter { it != selectedCityName }
+
+        _uiState.update { it.copy(cities = newOrderedCities) }
+    }
 }

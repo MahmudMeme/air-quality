@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -40,14 +40,17 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "Loading..."
 
-        val citySP = homeViewModel.getDefaultCityFromSp(requireContext())
-        setupSpinner(citySP)
+        val allCities =
+            resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
+        homeViewModel.initCities(allCities)
 
+        setupSpinner()
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.uiState.collect { state ->
                     binding.textHome.text = state.text
+                    updateSpinner(state.cities)
                 }
             }
         }
@@ -55,22 +58,22 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setupSpinner(citySp: String?) {
+    private fun updateSpinner(cities: List<String>) {
+        val adapter = binding.cityList.adapter as ArrayAdapter<String>
+        adapter.clear()
+        adapter.addAll(cities)
+        adapter.notifyDataSetChanged()
 
-        val allCities = resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
-        val orderedCities = if (citySp != null && allCities.contains(citySp)) {
-            listOf(citySp) + allCities.filter { it != citySp }
-        } else {
-            allCities
-        }
+        binding.cityList.setSelection(0)
+    }
 
+    private fun setupSpinner() {
         val adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.simple_spinner_item,
-            orderedCities
+            requireContext(), R.layout.simple_spinner_item, mutableListOf<String>()
         ).apply {
             setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         }
+
         binding.cityList.adapter = adapter
 
         binding.cityList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -78,32 +81,15 @@ class HomeFragment : Fragment() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long
+                id: Long,
             ) {
-                val selectedCityName = orderedCities[position]
-                homeViewModel.fetchAirValues(selectedCityName)
-                //homeViewModel.setTemporaryCity(requireContext(),selectedCityName)
-                val newOrderedCities =
-                    listOf(selectedCityName) + allCities.filter { it != selectedCityName }
-
-                adapter.clear()
-                adapter.addAll(newOrderedCities)
-                adapter.notifyDataSetChanged()
-
-                binding.cityList.setSelection(0)
+                homeViewModel.handleCitySelected(position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        val citySp= homeViewModel.getTempCityFromSp(requireContext())
-//        setupSpinner(citySp)
-//    }
-
 
     override fun onDestroyView() {
         _binding = null
