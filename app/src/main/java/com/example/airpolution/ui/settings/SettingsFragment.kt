@@ -1,4 +1,4 @@
-package com.example.airpolution.ui.notifications
+package com.example.airpolution.ui.settings
 
 import android.R
 import android.os.Bundle
@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class NotificationsFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
 

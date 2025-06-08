@@ -4,7 +4,9 @@ import com.example.airpolution.data.local.LocalDataSource
 import com.example.airpolution.data.remote.AirQualityResponse
 import com.example.airpolution.data.remote.RemoteAirValuesDataSource
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class Repository @Inject constructor(
     private val remoteAirValuesDataSource: RemoteAirValuesDataSource,
     private val localDataSource: LocalDataSource,
@@ -19,17 +21,5 @@ class Repository @Inject constructor(
 
     suspend fun setDefaultCity(city: String) {
         localDataSource.setDefaultCity(city)
-    }
-
-    suspend fun setTemporaryCity(city: String) {
-        localDataSource.setTemporaryCity(city)
-    }
-
-    suspend fun getTempCityFromSp(): String? {
-        return localDataSource.getTempCityFromSp()
-    }
-
-    suspend fun removeTempCityFromSp() {
-         localDataSource.removeTempCityFromSp()
     }
 }

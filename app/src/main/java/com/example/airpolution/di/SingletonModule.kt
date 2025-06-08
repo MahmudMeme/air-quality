@@ -2,12 +2,12 @@ package com.example.airpolution.di
 
 import android.app.Application
 import android.content.Context
+import com.example.airpolution.data.local.LocalDataSource
+import com.example.airpolution.data.local.LocalDataSourceImpl
 import com.example.airpolution.data.remote.AirValuesDBApi
 import com.example.airpolution.data.remote.RemoteAirValuesDataSource
 import com.example.airpolution.data.remote.RemoteAirValuesDataSourceImpl
-import com.example.airpolution.data.Repository
-import com.example.airpolution.data.local.LocalDataSource
-import com.example.airpolution.data.local.LocalDataSourceImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,28 +50,13 @@ abstract class SingletonModule {
         fun provideAirValuesDBApi(retrofit: Retrofit): AirValuesDBApi {
             return retrofit.create(AirValuesDBApi::class.java)
         }
-
-        @Provides
-        @Singleton
-        fun provideRemoteAirValuesDataSource(
-            airValuesDBApi: AirValuesDBApi,
-        ): RemoteAirValuesDataSource {
-            return RemoteAirValuesDataSourceImpl(airValuesDBApi)
-        }
-
-        @Provides
-        @Singleton
-        fun provideRepository(
-            remoteAirValuesDataSource: RemoteAirValuesDataSource,
-            localDataSource: LocalDataSource,
-        ): Repository {
-            return Repository(remoteAirValuesDataSource, localDataSource)
-        }
-
-        @Provides
-        @Singleton
-        fun provideLocalDataSource(context: Context): LocalDataSource {
-            return LocalDataSourceImpl(context)
-        }
     }
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoteAirValuesDataSource(impl: RemoteAirValuesDataSourceImpl): RemoteAirValuesDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindLocalDataSource(impl: LocalDataSourceImpl): LocalDataSource
 }

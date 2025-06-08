@@ -1,4 +1,4 @@
-package com.example.airpolution.ui.notifications
+package com.example.airpolution.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

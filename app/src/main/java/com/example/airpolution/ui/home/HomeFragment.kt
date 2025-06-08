@@ -40,21 +40,17 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "Loading..."
 
+        val allCities =
+            resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
+        homeViewModel.initCities(allCities)
 
-        val cityTemp = homeViewModel.getTempCityFromSp()
-        val citySP = homeViewModel.getDefaultCityFromSp()
-        if (cityTemp == null) {
-            setupSpinner(citySP)
-        } else {
-            setupSpinner(cityTemp)
-        }
-
-
+        setupSpinner()
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.uiState.collect { state ->
                     binding.textHome.text = state.text
+                    updateSpinner(state.cities)
                 }
             }
         }
@@ -62,23 +58,22 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setupSpinner(citySp: String?) {
+    private fun updateSpinner(cities: List<String>) {
+        val adapter = binding.cityList.adapter as ArrayAdapter<String>
+        adapter.clear()
+        adapter.addAll(cities)
+        adapter.notifyDataSetChanged()
 
-        val allCities =
-            resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
-        val orderedCities = if (citySp != null && allCities.contains(citySp)) {
-            listOf(citySp) + allCities.filter { it != citySp }
-        } else {
-            allCities
-        }
+        binding.cityList.setSelection(0)
+    }
 
+    private fun setupSpinner() {
         val adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.simple_spinner_item,
-            orderedCities
+            requireContext(), R.layout.simple_spinner_item, mutableListOf<String>()
         ).apply {
             setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         }
+
         binding.cityList.adapter = adapter
 
         binding.cityList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -88,20 +83,7 @@ class HomeFragment : Fragment() {
                 position: Int,
                 id: Long,
             ) {
-                val selectedCityName = orderedCities[position]
-                homeViewModel.fetchAirValues(selectedCityName)
-
-                homeViewModel.setTemporaryCity(selectedCityName)
-
-
-                val newOrderedCities =
-                    listOf(selectedCityName) + allCities.filter { it != selectedCityName }
-
-                adapter.clear()
-                adapter.addAll(newOrderedCities)
-                adapter.notifyDataSetChanged()
-
-                binding.cityList.setSelection(0)
+                homeViewModel.handleCitySelected(position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -112,11 +94,5 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        //ne vleguva vo ovoj metod bug??
-        homeViewModel.removeTempCityFromSp()
-        super.onDestroy()
     }
 }

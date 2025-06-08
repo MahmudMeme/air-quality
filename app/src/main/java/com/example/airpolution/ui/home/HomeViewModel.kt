@@ -12,14 +12,13 @@ import javax.inject.Inject
 
 data class HomeStateUI(
     val text: String = "",
-    val city: String? = "",
+    val cities: List<String> = emptyList(),
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeStateUI())
     val uiState = _uiState.asStateFlow()
-    var cityDef:String?=null
 
     fun fetchAirValues(cityName: String) {
         viewModelScope.launch {
@@ -49,35 +48,32 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    fun getDefaultCityFromSp(): String? {
-        viewModelScope.launch {
-            val city = repository.getDefaultCityFromSp()
-            city?.let { fetchAirValues(it) }
-            _uiState.update { state ->
-                state.copy(city=city)
-            }
-            cityDef = city
-        }
-        return cityDef
-    }
-
-
-    fun setTemporaryCity(city: String) {
-        CityTemp.setCity(city)
-    }
-
-    fun getTempCityFromSp(): String? {
-        return CityTemp.getCity()
-    }
-
-    fun removeTempCityFromSp() {
-        viewModelScope.launch {
-            repository.getDefaultCityFromSp()?.let { CityTemp.setCity(it) }
-        }
-    }
-
     private fun buildUrlForCity(cityName: String): String {
         return "https://${cityName}.pulse.eco/rest/overall"
     }
 
+    fun initCities(cities: List<String>) {
+        viewModelScope.launch {
+            val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
+            city?.let { fetchAirValues(it) }
+            val orderedCities = if (city != null && cities.contains(city)) {
+                listOf(city) + cities.filter { it != city }
+            } else {
+                cities
+            }
+            _uiState.update { it.copy(cities = orderedCities) }
+        }
+    }
+
+    fun handleCitySelected(position: Int) {
+        val selectedCityName = uiState.value.cities[position]
+        fetchAirValues(selectedCityName)
+
+        CityTemp.setCity(selectedCityName)
+
+        val newOrderedCities =
+            listOf(selectedCityName) + uiState.value.cities.filter { it != selectedCityName }
+
+        _uiState.update { it.copy(cities = newOrderedCities) }
+    }
 }
