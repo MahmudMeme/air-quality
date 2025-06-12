@@ -1,9 +1,10 @@
-package com.example.airpolution.data
+package com.example.airpolution.data.remote
 
-class RemoteAirValuesDataSourceImpl(
-    private val airValuesDBApi: AirValuesDBApi
-) :
-    RemoteAirValuesDataSource {
+import javax.inject.Inject
+
+class RemoteAirValuesDataSourceImpl @Inject constructor(
+    private val airValuesDBApi: AirValuesDBApi,
+) : RemoteAirValuesDataSource {
     override suspend fun getAirValues(url: String): AirQualityResponse {
 
         val airValuesResponse = airValuesDBApi.getAirValues(url)

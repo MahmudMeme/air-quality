@@ -1,4 +1,4 @@
-package com.example.airpolution.data
+package com.example.airpolution.data.remote
 
 import retrofit2.Response
 import retrofit2.http.GET
