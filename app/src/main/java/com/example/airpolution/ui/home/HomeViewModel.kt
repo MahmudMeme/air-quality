@@ -36,7 +36,6 @@ class HomeViewModel @Inject constructor(
                 val city = response.cityName
                 val values = response.values
 
-
                 cardsViewBuild(values)
 
             } catch (e: Exception) {

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.airpolution.databinding.FragmentHomeBinding
 import com.example.airpolution.ui.home.adapter.AirMeasurementsAdapter
+import com.example.airpolution.ui.home.dialogs.DialogUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,13 @@ class HomeFragment : Fragment() {
 
         setupSpinner()
 
-        val adapter = AirMeasurementsAdapter()
+        val adapter = AirMeasurementsAdapter().apply {
+            setOnItemClickListener { measurement ->
+                DialogUtils.showMeasurementInfoDialog(requireContext(), measurement)
+            }
+        }
+
+
         binding.rcAirMeasurements.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcAirMeasurements.adapter = adapter
 

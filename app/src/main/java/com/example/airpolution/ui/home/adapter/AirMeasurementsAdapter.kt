@@ -10,17 +10,24 @@ import com.example.airpolution.domain.CardAirMeasurementDisplay
 class AirMeasurementsAdapter() :
     RecyclerView.Adapter<AirMeasurementsAdapter.AirMeasurementsViewHolder>() {
 
-//    private val onValueClickListener: ((position: Int) -> Unit)? = null
     private val data = mutableListOf<CardAirMeasurementDisplay>()
+    private var onItemClickListener: ((CardAirMeasurementDisplay) -> Unit)? = null
 
-    class AirMeasurementsViewHolder(private val binding: ArimeasurementitemBinding) :
+    fun setOnItemClickListener(listener: (CardAirMeasurementDisplay) -> Unit) {
+        onItemClickListener = listener
+    }
+
+    inner class AirMeasurementsViewHolder(private val binding: ArimeasurementitemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(card: CardAirMeasurementDisplay) {
             binding.txtAirMeasurementsRC.text = card.displayText
             binding.cardViewItem.setCardBackgroundColor(card.color)
             binding.iconView.setImageResource(card.imagePath)
-        }
 
+            binding.root.setOnClickListener {
+                onItemClickListener?.invoke(card)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AirMeasurementsViewHolder {

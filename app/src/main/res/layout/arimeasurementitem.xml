@@ -28,8 +28,7 @@
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/icon_tint_color" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/txt_airMeasurementsRC"
@@ -38,7 +37,7 @@
             android:maxLines="3"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="Measurement value here"
+            android:text="@string/measurement_value_here"
             android:textAlignment="viewStart"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -52,15 +51,6 @@
             app:layout_constraintStart_toEndOf="@id/iconView"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Additional decorative element -->
-        <View
-            android:layout_width="4dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
-            android:background="?attr/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

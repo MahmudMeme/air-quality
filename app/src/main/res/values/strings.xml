@@ -15,4 +15,41 @@
         <item>strumica</item>
         <item>gostivar</item>
     </string-array>
+
+    <!-- Temperature -->
+    <string name="temperature_title">Temperature</string>
+    <string name="temperature_info">• Normal range: 18–24°C\n• Above 25°C: Uncomfortable heat\n• Above 30°C: Heat stress risk\n• Below 10°C: Cold stress risk\n\nOptimal indoor temperature is 20–22°C.</string>
+
+    <!-- PM10 -->
+    <string name="pm10_title">PM10 Particles</string>
+    <string name="pm10_info">• Inhalable particles (≤10μm diameter)\n• Safe level: &lt;50 μg/m³ (24h avg)\n• EU limit: 50 μg/m³\n• WHO guideline: 45 μg/m³ (annual)\n\nCan cause respiratory issues when elevated.</string>
+
+    <!-- PM2.5 -->
+    <string name="pm25_title">PM2.5 Fine Particles</string>
+    <string name="pm25_info">• Fine inhalable particles (≤2.5μm)\n• Safe level: &lt;25 μg/m³ (24h avg)\n• WHO guideline: 15 μg/m³ (annual)\n\nPenetrates deep into lungs and bloodstream. Long-term exposure increases cardiovascular risks.</string>
+
+    <!-- NO2 -->
+    <string name="no2_title">Nitrogen Dioxide (NO₂)</string>
+    <string name="no2_info">• Gas from combustion processes\n• Safe level: &lt;40 μg/m³ (annual)\n• WHO guideline: 25 μg/m³ (24h)\n\nCauses airway inflammation and reduces lung function. Major component of smog.</string>
+
+    <!-- O3 -->
+    <string name="o3_title">Ozone (O₃)</string>
+    <string name="o3_info">• Ground-level ozone (pollutant)\n• Safe level: &lt;100 μg/m³ (8h avg)\n• WHO guideline: 60 μg/m³ (8h)\n\nCauses respiratory irritation. High levels worsen asthma and lung diseases.</string>
+
+    <!-- Humidity -->
+    <string name="humidity_title">Humidity</string>
+    <string name="humidity_info">• Comfortable range: 30–60%\n• Below 30%: Dry air, irritation\n• Above 60%: Mold growth risk\n\nOptimal indoor humidity is 40–50% for health and comfort.</string>
+
+    <!-- Pressure -->
+    <string name="pressure_title">Atmospheric Pressure</string>
+    <string name="pressure_info">• Normal range: 970–1040 hPa\n• Affects weather patterns\n• Low pressure: Often brings storms\n• High pressure: Usually clear skies\n\nRapid changes may affect sensitive individuals.</string>
+
+    <!-- Noise -->
+    <string name="noise_title">Noise Level</string>
+    <string name="noise_info">• Safe level: &lt;55 dB (daytime)\n• 55–65 dB: Stress effects\n• Above 65 dB: Health risk\n• WHO guideline: 53 dB (day)\n\nChronic noise exposure increases cardiovascular disease risk.</string>
+
+    <!-- Common -->
+    <string name="close">Close</string>
+    <string name="source_info">\n\nSource: WHO Air Quality Guidelines</string>
+    <string name="measurement_value_here">Measurement value here</string>
 </resources>
