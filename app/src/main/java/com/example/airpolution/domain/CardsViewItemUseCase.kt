@@ -1,7 +1,7 @@
 package com.example.airpolution.domain
 
 import android.graphics.Color
-import android.graphics.Path
+import com.example.airpolution.R
 import com.example.airpolution.data.remote.AirQualityValues
 import javax.inject.Inject
 
@@ -14,49 +14,50 @@ class CardsViewItemUseCase @Inject constructor() {
                 values.pm10.toInt(),
                 displayText = "pm10: " + values.pm10,
                 color = getPm10Color(values.pm10),
-                imagePath = Path(null)
+                imagePath = R.drawable.pm10_50white
             ), CardAirMeasurementDisplay(
                 "pm25",
                 values.pm25.toInt(),
                 displayText = "pm25: " + values.pm25,
                 color = getPm25Color(values.pm25),
-                imagePath = Path(null)
+                imagePath = R.drawable.pm10_50white
             ), CardAirMeasurementDisplay(
                 "temperature",
                 values.temperature.toInt(),
                 displayText = "Temperature: " + values.temperature,
                 color = getTemperatureColor(values.temperature),
-                imagePath = Path(null)
+                imagePath = R.drawable.temperature_50
             ), CardAirMeasurementDisplay(
                 "o3",
-                values.o3.toInt(),
+//                values.o3.toInt(),
+                0,
                 displayText = "o3: " + values.o3,
                 color = getO3Color(values.o3),
-                imagePath = Path(null)
+                imagePath = R.drawable.o2_50
             ), CardAirMeasurementDisplay(
                 "no2",
                 values.no2.toInt(),
                 displayText = "no2: " + values.no2,
                 color = getNo2Color(values.no2),
-                imagePath = Path(null)
+                imagePath = R.drawable.no2
             ), CardAirMeasurementDisplay(
                 "noise",
                 values.noise_dba.toInt(),
                 displayText = "Noise: " + values.noise_dba,
                 color = getNoiseColor(values.noise_dba),
-                imagePath = Path(null)
+                imagePath = R.drawable.noise_50
             ), CardAirMeasurementDisplay(
                 "pressure",
                 values.pressure.toInt(),
                 displayText = "Pressure: " + values.pressure,
                 color = getPressureColor(values.pressure),
-                imagePath = Path(null)
+                imagePath = R.drawable.pressure_50
             ), CardAirMeasurementDisplay(
                 "humidity",
                 values.humidity.toInt(),
                 displayText = "Humidity: " + values.humidity,
                 color = getHumidityColor(values.humidity),
-                imagePath = Path(null)
+                imagePath = R.drawable.humidity_50
             )
         )
         return list

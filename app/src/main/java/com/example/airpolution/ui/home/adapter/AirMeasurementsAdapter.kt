@@ -18,6 +18,7 @@ class AirMeasurementsAdapter() :
         fun bind(card: CardAirMeasurementDisplay) {
             binding.txtAirMeasurementsRC.text = card.displayText
             binding.cardViewItem.setCardBackgroundColor(card.color)
+            binding.iconView.setImageResource(card.imagePath)
         }
 
     }
