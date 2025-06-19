@@ -7,6 +7,7 @@ import com.example.airpolution.data.local.LocalDataSourceImpl
 import com.example.airpolution.data.remote.AirValuesDBApi
 import com.example.airpolution.data.remote.RemoteAirValuesDataSource
 import com.example.airpolution.data.remote.RemoteAirValuesDataSourceImpl
+import com.example.airpolution.domain.CardsViewItemUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -50,6 +51,11 @@ abstract class SingletonModule {
         fun provideAirValuesDBApi(retrofit: Retrofit): AirValuesDBApi {
             return retrofit.create(AirValuesDBApi::class.java)
         }
+//        @Provides
+//        @Singleton
+//        fun provideCardsViewItemUseCase(): CardsViewItemUseCase {
+//            return CardsViewItemUseCase()
+//        }
     }
 
     @Binds
