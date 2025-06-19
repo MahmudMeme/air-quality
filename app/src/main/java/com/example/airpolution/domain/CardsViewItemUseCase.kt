@@ -11,50 +11,49 @@ class CardsViewItemUseCase @Inject constructor() {
         val list: List<CardAirMeasurementDisplay> = listOf(
             CardAirMeasurementDisplay(
                 "pm10",
-                values.pm10.toInt(),
+//                values.pm10.toIntOrNull() ?: -9999,
                 displayText = "pm10: " + values.pm10,
                 color = getPm10Color(values.pm10),
                 imagePath = R.drawable.pm10_50white
             ), CardAirMeasurementDisplay(
                 "pm25",
-                values.pm25.toInt(),
+//                values.pm25.toIntOrNull() ?: -9999,
                 displayText = "pm25: " + values.pm25,
                 color = getPm25Color(values.pm25),
                 imagePath = R.drawable.pm10_50white
             ), CardAirMeasurementDisplay(
                 "temperature",
-                values.temperature.toInt(),
+//                values.temperature.toIntOrNull() ?: -9999,
                 displayText = "Temperature: " + values.temperature,
                 color = getTemperatureColor(values.temperature),
                 imagePath = R.drawable.temperature_50
             ), CardAirMeasurementDisplay(
                 "o3",
-//                values.o3.toInt(),
-                0,
+//                values.o3.toIntOrNull() ?: -9999,
                 displayText = "o3: " + values.o3,
                 color = getO3Color(values.o3),
                 imagePath = R.drawable.o2_50
             ), CardAirMeasurementDisplay(
                 "no2",
-                values.no2.toInt(),
+//                values.no2.toIntOrNull() ?: -9999,
                 displayText = "no2: " + values.no2,
                 color = getNo2Color(values.no2),
                 imagePath = R.drawable.no2
             ), CardAirMeasurementDisplay(
                 "noise",
-                values.noise_dba.toInt(),
+//                values.noise_dba.toIntOrNull() ?: -9999,
                 displayText = "Noise: " + values.noise_dba,
                 color = getNoiseColor(values.noise_dba),
                 imagePath = R.drawable.noise_50
             ), CardAirMeasurementDisplay(
                 "pressure",
-                values.pressure.toInt(),
+//                values.pressure.toIntOrNull() ?: -9999,
                 displayText = "Pressure: " + values.pressure,
                 color = getPressureColor(values.pressure),
                 imagePath = R.drawable.pressure_50
             ), CardAirMeasurementDisplay(
                 "humidity",
-                values.humidity.toInt(),
+//                values.humidity.toIntOrNull() ?: -9999,
                 displayText = "Humidity: " + values.humidity,
                 color = getHumidityColor(values.humidity),
                 imagePath = R.drawable.humidity_50
@@ -64,6 +63,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getTemperatureColor(tempStr: String): Int {
+        if (tempStr.isNullOrEmpty()) return Color.GRAY
         val temp = tempStr.toFloatOrNull() ?: return Color.GRAY
         return when {
             temp < 0 -> Color.parseColor("#00BFFF") // DeepSkyBlue
@@ -75,6 +75,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getPm10Color(pm10Str: String): Int {
+        if (pm10Str.isNullOrEmpty()) return Color.GRAY
         val pm10 = pm10Str.toFloatOrNull() ?: return Color.GRAY
         return when {
             pm10 <= 20 -> Color.parseColor("#90EE90") // Good
@@ -85,6 +86,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getPm25Color(pm25Str: String): Int {
+        if (pm25Str.isNullOrEmpty()) return Color.GRAY
         val pm25 = pm25Str.toFloatOrNull() ?: return Color.GRAY
         return when {
             pm25 <= 10 -> Color.parseColor("#90EE90") // Good
@@ -95,6 +97,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getO3Color(o3Str: String): Int {
+        if (o3Str.isNullOrEmpty()) return Color.GRAY
         val o3 = o3Str.toFloatOrNull() ?: return Color.GRAY
         return when {
             o3 <= 60 -> Color.parseColor("#90EE90")
@@ -105,6 +108,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getNo2Color(no2Str: String): Int {
+        if (no2Str.isNullOrEmpty()) return Color.GRAY
         val no2 = no2Str.toFloatOrNull() ?: return Color.GRAY
         return when {
             no2 <= 50 -> Color.parseColor("#90EE90")
@@ -115,6 +119,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getNoiseColor(noiseStr: String): Int {
+        if (noiseStr.isNullOrEmpty()) return Color.GRAY
         val noise = noiseStr.toFloatOrNull() ?: return Color.GRAY
         return when {
             noise < 30 -> Color.parseColor("#90EE90") // Quiet
@@ -125,6 +130,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getPressureColor(pressureStr: String): Int {
+        if (pressureStr.isNullOrEmpty()) return Color.GRAY
         val pressure = pressureStr.toFloatOrNull() ?: return Color.GRAY
         return when {
             pressure < 1000 -> Color.parseColor("#FFA07A") // LightSalmon (low pressure)
@@ -134,6 +140,7 @@ class CardsViewItemUseCase @Inject constructor() {
     }
 
     private fun getHumidityColor(humidityStr: String): Int {
+        if (humidityStr.isNullOrEmpty()) return Color.GRAY
         val humidity = humidityStr.toFloatOrNull() ?: return Color.GRAY
         return when {
             humidity < 30 -> Color.parseColor("#F0E68C") // Khaki (dry)

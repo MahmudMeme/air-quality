@@ -13,4 +13,5 @@
     <color name="bad_red">#F44336</color>
     <color name="default_gray">#9E9E9E</color>
     <color name="yellow">#FFC107</color>
+    <color name="icon_tint_color">#333333</color>
 </resources>
