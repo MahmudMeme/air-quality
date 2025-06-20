@@ -50,12 +50,11 @@ class HomeViewModel @Inject constructor(
 
 
     private fun cardsViewBuild(values: AirQualityValues) {
-            val listCards = cardsViewItemUseCase(values)
+        val listCards = cardsViewItemUseCase(values)
 
-            _uiState.update { state ->
-                state.copy(airMeasurements = listCards)
-            }
-
+        _uiState.update { state ->
+            state.copy(airMeasurements = listCards)
+        }
     }
 
     private fun buildUrlForCity(cityName: String): String {
@@ -86,5 +85,4 @@ class HomeViewModel @Inject constructor(
 
         _uiState.update { it.copy(cities = newOrderedCities) }
     }
-
 }
