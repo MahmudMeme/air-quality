@@ -7,6 +7,8 @@ import com.example.airpolution.data.remote.AirQualityValues
 import com.example.airpolution.data.remote.AverageDataResponse
 import com.example.airpolution.domain.CardAirMeasurementDisplay
 import com.example.airpolution.domain.CardsViewItemUseCase
+import com.example.airpolution.ui.home.datesBuilder.DateMonth
+import com.example.airpolution.ui.home.datesBuilder.DateWeek
 import com.example.airpolution.ui.home.datesBuilder.DateYesterday
 import com.example.airpolution.ui.home.singleton.CityTemp
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -106,6 +108,32 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun buildURLForYesterday(cityName: String, amount: Int): MutableList<String> {
+        var period: String = String()
+        period = when (amount) {
+            -1 -> "day"
+            -2 -> "day"
+            1 -> "week"
+            else -> "month"
+        }
+        val valueType = listOf("pm10", "pm25", "temperature", "humidity", "noise")
+
+        val (fromDateTime, toDateTime) = when (amount) {
+            -1 -> DateYesterday.getYesterdayDateRange(amount)
+            -2 -> DateYesterday.getYesterdayDateRange(amount)
+            1 -> DateWeek.getPreviousWeekRangeLegacy()
+            else -> DateMonth.getPreviousMonthRangeLegacy()
+        }
+
+        val listURL = mutableListOf<String>()
+        for (value in valueType) {
+            val url =
+                "https://${cityName}.pulse.eco/rest/avgData/" +
+                        "${period}?sensorId=${-1}&type=${value}&from=${fromDateTime}&to=${toDateTime}"
+            listURL.add(url)
+        }
+        return listURL
+    }
     private suspend fun buildStringsResponse(
         city: String,
         listURL: MutableList<String>,
@@ -119,14 +147,21 @@ class HomeViewModel @Inject constructor(
         val sb: StringBuilder = StringBuilder()
         when (amount) {
             -1 -> {
-                sb.append("City " + city + " yesterday had\n")
+                sb.append("City $city yesterday had\n")
             }
 
             -2 -> {
-                sb.append("City " + city + " 2 day before today had\n")
+                sb.append("City $city 2 day before today had\n")
+            }
+
+            1 -> {
+                sb.append("City $city last week had\n")
+            }
+
+            else -> {
+                sb.append("City $city last month had\n")
             }
         }
-//        sb.append("City " + city + " yesterday had\n")
         val map = HashMap<String, String>()
 
 
@@ -149,19 +184,4 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(text = sb.toString()) }
         cardsViewBuild(values)
     }
-
-    private fun buildURLForYesterday(cityName: String, amount: Int): MutableList<String> {
-        //pm10, pm25, temperature, humidity, noise
-        val valueType = listOf("pm10", "pm25", "temperature", "humidity", "noise")
-        val (fromDateTime, toDateTime) = DateYesterday.getYesterdayDateRange(amount)
-
-        val listURL = mutableListOf<String>()
-        for (value in valueType) {
-            val url =
-                "https://${cityName}.pulse.eco/rest/avgData/" + "day?sensorId=${-1}&type=${value}&from=${fromDateTime}&to=${toDateTime}"
-            listURL.add(url)
-        }
-        return listURL
-    }
-
 }

@@ -70,6 +70,12 @@ class HomeFragment : Fragment() {
         binding.btnTwoDaysBefore.setOnClickListener {
             homeViewModel.averageDataYesterday(-2)
         }
+        binding.btnWeekly.setOnClickListener {
+            homeViewModel.averageDataYesterday(1)
+        }
+        binding.btnMonthl.setOnClickListener {
+            homeViewModel.averageDataYesterday(2)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
