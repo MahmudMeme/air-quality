@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="hot_red">#FF0000</color>
+    <color name="cool_green">#00FF00</color>
+    <color name="good_green">#4CAF50</color>
+    <color name="bad_red">#F44336</color>
+    <color name="default_gray">#9E9E9E</color>
+    <color name="yellow">#FFC107</color>
+    <color name="icon_tint_color">#333333</color>
+    <color name="gray_dialog_display">#808080</color>
 </resources>

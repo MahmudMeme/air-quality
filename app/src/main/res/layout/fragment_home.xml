@@ -6,28 +6,88 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/cityList"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/btnToday"
+                android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+        android:textAlignment="center"
+                android:text="today"
+        app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnyesterday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="yesterday"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toStartOf="@+id/btnToday"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnTwoDaysBefore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="2 days before"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toStartOf="@+id/btnyesterday"
         app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnWeekly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="Weekly"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toStartOf="@+id/btnTwoDaysBefore"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnMonthl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="Monthly"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toStartOf="@+id/btnWeekly"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcAirMeasurements"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/cityList"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
     <Spinner
         android:id="@+id/cityList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
         android:layout_marginBottom="60dp"
         android:prompt="@string/select_city"
         app:layout_constraintBottom_toBottomOf="parent">
-
     </Spinner>
 
 
