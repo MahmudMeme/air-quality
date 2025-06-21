@@ -44,7 +44,6 @@ class HomeFragment : Fragment() {
 
         binding.homeText.text = "Loading..."
 
-
         setupSpinner()
 
         val adapter = AirMeasurementsAdapter().apply {
@@ -52,7 +51,6 @@ class HomeFragment : Fragment() {
                 DialogUtils.showMeasurementInfoDialog(requireContext(), measurement)
             }
         }
-
 
         binding.rcAirMeasurements.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcAirMeasurements.adapter = adapter
@@ -86,7 +84,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
         return root
     }
 

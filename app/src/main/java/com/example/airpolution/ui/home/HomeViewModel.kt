@@ -73,7 +73,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
     private fun cardsViewBuild(values: AirQualityValues) {
         val listCards = cardsViewItemUseCase(values)
 
@@ -103,7 +102,6 @@ class HomeViewModel @Inject constructor(
 
         _uiState.update { it.copy(cities = newOrderedCities) }
     }
-
 
     fun averageDataYesterday(amount: Int) {
         _uiState.update { it.copy(period = amount) }
@@ -158,7 +156,7 @@ class HomeViewModel @Inject constructor(
     ) {
         val listResponse = mutableListOf<AverageDataResponse>()
         for (url in listURL) {
-            val response = repository.getAverageDataForYesterday(url)
+            val response = repository.getAverageData(url)
             listResponse.add(response.last())
         }
         val sb: StringBuilder = StringBuilder()
