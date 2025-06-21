@@ -104,6 +104,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun averageDataYesterday(amount: Int) {
+        if (amount==_uiState.value.period) return
         _uiState.update { it.copy(period = amount) }
         if (amount == 0) {
             fetchCurrentAirValues()
