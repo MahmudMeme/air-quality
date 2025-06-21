@@ -14,7 +14,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.airpolution.databinding.FragmentHomeBinding
+import com.example.airpolution.ui.home.adapter.AirMeasurementsAdapter
+import com.example.airpolution.ui.home.dialogs.DialogUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -38,7 +42,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.textHome.text = "Loading..."
+        //binding.textHome.text = "Loading..."
 
         val allCities =
             resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
@@ -46,11 +50,26 @@ class HomeFragment : Fragment() {
 
         setupSpinner()
 
+        val adapter = AirMeasurementsAdapter().apply {
+            setOnItemClickListener { measurement ->
+                DialogUtils.showMeasurementInfoDialog(requireContext(), measurement)
+            }
+        }
+
+
+        binding.rcAirMeasurements.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcAirMeasurements.adapter = adapter
+
+        binding.rcAirMeasurements.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        )
+
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.uiState.collect { state ->
-                    binding.textHome.text = state.text
+                    //binding.textHome.text = state.text
                     updateSpinner(state.cities)
+                    adapter.updateData(state.airMeasurements)
                 }
             }
         }

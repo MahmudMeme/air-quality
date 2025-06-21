@@ -1,4 +1,4 @@
-package com.example.airpolution.ui.home
+package com.example.airpolution.ui.home.singleton
 
 object CityTemp {
     private var cityTemp: String? = null

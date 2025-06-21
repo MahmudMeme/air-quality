@@ -13,33 +13,33 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.airpolution.databinding.FragmentNotificationsBinding
+import com.example.airpolution.databinding.FragmentSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private val notificationsViewModel: NotificationsViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
-        val notificationsViewModel = ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        val settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         setupSpinner()
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                notificationsViewModel.uiState.collect { state ->
+                settingsViewModel.uiState.collect { state ->
                     binding.textNotifications.text = state.text
                 }
             }
@@ -53,7 +53,7 @@ class SettingsFragment : Fragment() {
         val allCities =
             resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
 
-        val savedCity = notificationsViewModel.getDefaultCityFromSp()
+        val savedCity = settingsViewModel.getDefaultCityFromSp()
             val orderedCities = if (savedCity != null && allCities.contains(savedCity)) {
                 listOf(savedCity) + allCities.filter { it != savedCity }
             } else {
@@ -78,7 +78,7 @@ class SettingsFragment : Fragment() {
 
                         val selectedCityName = orderedCities[position]
                         viewLifecycleOwner.lifecycleScope.launch {
-                            notificationsViewModel.setDefaultCity(selectedCityName)
+                            settingsViewModel.setDefaultCity(selectedCityName)
                         }
 
                         val newOrderedCities =

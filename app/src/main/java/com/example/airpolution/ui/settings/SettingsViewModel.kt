@@ -14,7 +14,7 @@ data class SettingsStateUI(
 )
 
 @HiltViewModel
-class NotificationsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class SettingsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsStateUI())
     val uiState = _uiState.asStateFlow()
     var cityDef: String? = ""
