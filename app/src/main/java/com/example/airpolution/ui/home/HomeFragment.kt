@@ -44,9 +44,6 @@ class HomeFragment : Fragment() {
 
         binding.homeText.text = "Loading..."
 
-        val allCities =
-            resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
-        homeViewModel.initCities(allCities)
 
         setupSpinner()
 
@@ -64,6 +61,9 @@ class HomeFragment : Fragment() {
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
+        binding.btnToday.setOnClickListener {
+            homeViewModel.averageDataYesterday(0)
+        }
         binding.btnyesterday.setOnClickListener {
             homeViewModel.averageDataYesterday(-1)
         }

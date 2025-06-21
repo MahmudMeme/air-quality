@@ -26,4 +26,7 @@ class Repository @Inject constructor(
     suspend fun getAverageDataForYesterday(url: String): List<AverageDataResponse> {
         return remoteAirValuesDataSource.getAverageDataForYesterday(url)
     }
+    suspend fun getAllCitiesFromStringsXML(): List<String> {
+        return localDataSource.getAllCitiesFromStringsXML()
+    }
 }

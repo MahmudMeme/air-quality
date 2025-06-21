@@ -22,6 +22,7 @@ data class HomeStateUI(
     val text: String = "",
     val cities: List<String> = emptyList(),
     val airMeasurements: List<CardAirMeasurementDisplay> = emptyList(),
+    val period: Int = 0,
 )
 
 @HiltViewModel
@@ -32,16 +33,37 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeStateUI())
     val uiState = _uiState.asStateFlow()
 
-    fun fetchAirValues(cityName: String) {
+    init {
+        viewModelScope.launch {
+            val allCities = repository.getAllCitiesFromStringsXML()
+            fetchCurrentAirValues()
+            val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
+            val orderedCities = if (city != null && allCities.contains(city)) {
+                listOf(city) + allCities.filter { it != city }
+            } else {
+                allCities
+            }
+            val text = "now in $city"
+            _uiState.update { it.copy(cities = orderedCities, text = text, period = 0) }
+        }
+    }
+
+    private fun fetchCurrentAirValues() {
         viewModelScope.launch {
             try {
-                val url = buildUrlForCity(cityName)
-                val response = repository.getAirValues(url)
-                val city = response.cityName
-                val values = response.values
+                val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
+                city?.let {
+                    val url = buildUrlForCity(city)
+                    val response = repository.getAirValues(url)
+                    val values = response.values
 
-                cardsViewBuild(values)
+                    val text = "now in $city"
+                    _uiState.update { state ->
+                        state.copy(text = text)
+                    }
 
+                    cardsViewBuild(values)
+                }
             } catch (e: Exception) {
                 val errorMessage = "Failed to fetch air values: ${e.message}"
                 _uiState.update { state ->
@@ -64,25 +86,17 @@ class HomeViewModel @Inject constructor(
         return "https://${cityName}.pulse.eco/rest/overall"
     }
 
-    fun initCities(cities: List<String>) {
-        viewModelScope.launch {
-            val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
-            city?.let { fetchAirValues(it) }
-            val orderedCities = if (city != null && cities.contains(city)) {
-                listOf(city) + cities.filter { it != city }
-            } else {
-                cities
-            }
-            val text = "now in " + city
-            _uiState.update { it.copy(cities = orderedCities, text = text) }
-        }
-    }
 
     fun handleCitySelected(position: Int) {
         val selectedCityName = uiState.value.cities[position]
-        fetchAirValues(selectedCityName)
 
         CityTemp.setCity(selectedCityName)
+        val period = _uiState.value.period
+        if (period == 0) {
+            fetchCurrentAirValues()
+        } else {
+            averageDataYesterday(period)
+        }
 
         val newOrderedCities =
             listOf(selectedCityName) + uiState.value.cities.filter { it != selectedCityName }
@@ -92,15 +106,18 @@ class HomeViewModel @Inject constructor(
 
 
     fun averageDataYesterday(amount: Int) {
+        _uiState.update { it.copy(period = amount) }
+        if (amount == 0) {
+            fetchCurrentAirValues()
+            return
+        }
         viewModelScope.launch {
             try {
-
                 val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
                 city?.let {
                     val listURL = buildURLForYesterday(it, amount)
 
                     buildStringsResponse(city, listURL, amount)
-
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(text = e.message.toString()) }
@@ -164,10 +181,7 @@ class HomeViewModel @Inject constructor(
         }
         val map = HashMap<String, String>()
 
-
         for (response in listResponse) {
-            val info = response.type + " " + response.value + "\n"
-            sb.append(info)
             map[response.type] = response.value
         }
         val values: AirQualityValues = AirQualityValues(
