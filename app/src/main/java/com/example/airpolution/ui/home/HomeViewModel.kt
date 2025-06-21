@@ -41,8 +41,7 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 val errorMessage = "Failed to fetch air values: ${e.message}"
                 _uiState.update { state ->
-                    state.copy(errorText = errorMessage)
-                    state.copy(airMeasurements = emptyList())
+                    state.copy(errorText = errorMessage,airMeasurements = emptyList())
                 }
             }
         }
