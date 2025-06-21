@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        //binding.textHome.text = "Loading..."
+        binding.homeText.text = "Loading..."
 
         val allCities =
             resources.getStringArray(com.example.airpolution.R.array.cities_list).toList()
@@ -64,10 +64,17 @@ class HomeFragment : Fragment() {
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
 
+        binding.btnyesterday.setOnClickListener {
+            homeViewModel.averageDataYesterday(-1)
+        }
+        binding.btnTwoDaysBefore.setOnClickListener {
+            homeViewModel.averageDataYesterday(-2)
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.uiState.collect { state ->
-                    //binding.textHome.text = state.text
+                    binding.homeText.text = state.text
                     updateSpinner(state.cities)
                     adapter.updateData(state.airMeasurements)
                 }
