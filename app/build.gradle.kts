@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,6 +23,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_KEY", "\"${properties["DEEPSEEK_API_KEY"]}\"")
+        buildConfigField("String", "DAPI_KEY", "\"${System.getenv("DEEPSEEK_API_KEY")}\"")
     }
 
     buildTypes {
@@ -40,6 +44,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }

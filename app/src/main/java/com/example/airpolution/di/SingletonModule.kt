@@ -37,7 +37,7 @@ abstract class SingletonModule {
         @Provides
         @Singleton
         fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-            val baseUrl = "https://placeholder.pulse.eco/"
+            val baseUrl = "https://api.deepseek.com/v1/"
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())

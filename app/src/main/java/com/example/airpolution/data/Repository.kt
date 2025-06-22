@@ -29,4 +29,7 @@ class Repository @Inject constructor(
     suspend fun getAllCitiesFromStringsXML(): List<String> {
         return localDataSource.getAllCitiesFromStringsXML()
     }
+    suspend fun getPrediction(prompt: String): String? {
+        return remoteAirValuesDataSource.predict(prompt)
+    }
 }
