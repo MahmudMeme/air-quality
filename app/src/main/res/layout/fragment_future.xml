@@ -14,19 +14,39 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
+        android:layout_marginVertical="15dp"
+        android:lineSpacingExtra="2sp"
         android:textSize="20sp"
+        android:paddingVertical="15dp"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btnPredict"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
     <Button
         android:id="@+id/btnPredict"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="predit for tomorow"
-        app:layout_constraintTop_toBottomOf="@+id/text_dashboard"
+        android:backgroundTint="@color/button_unselected"
+        android:text="predict for tomorow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnMoreInfo"
         />
+
+    <Button
+        android:id="@+id/btnMoreInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/button_unselected"
+        android:enabled="false"
+        android:text="More Info"
+        android:layout_marginBottom="70sp"
+        android:textColor="@color/gray_dialog_display"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

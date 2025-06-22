@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class FutureStateUI(
-    val text: String = "This is future fragment",
+    val text: String = "Press the button to predict",
+    val moreInfo: String = "",
 )
 
 @HiltViewModel
@@ -32,6 +33,7 @@ class FutureViewModel @Inject constructor(private val repository: Repository) : 
             try {
                 val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
                 city?.let {
+                    _uiState.update { it.copy(text = "Loading") }
                     val listUrl = buildURLForPrediction(city)
 
                     buildPrompt(listUrl)
@@ -85,12 +87,12 @@ class FutureViewModel @Inject constructor(private val repository: Repository) : 
             listNoise
         )
 
-        val prediction = repository.getPrediction(promptMessage)
-        when (prediction) {
+        when (val prediction = repository.getPrediction(promptMessage)) {
             is PredictionResult.Success -> {
                 val data = prediction.data
                 val result = ParseJSON.parsePredictionResponse(data)
-                _uiState.update { it.copy(text = result.get(0)) }
+                val moreInfo = "${result.get(1)} \n ${result.get(2)}"
+                _uiState.update { it.copy(text = result.get(0), moreInfo = moreInfo) }
             }
 
             is PredictionResult.Error -> {
@@ -98,12 +100,55 @@ class FutureViewModel @Inject constructor(private val repository: Repository) : 
             }
         }
 
-//        val result = ParseJSON.parsePredictionResponse(prediction)
-//        if (result.isEmpty()) {
-//            val info = "greks vo rezultatot od promtot"
-//            _uiState.update { it.copy(text = info) }
-//        }
-//
-//        _uiState.update { it.copy(text = result.get(0)) }
+//        val data = ValidMeesage
+//        val result = ParseJSON.parsePredictionResponse(data)
+//        val moreInfo = "${result.get(1)} \n ${result.get(2)}"
+//        _uiState.update { it.copy(text = result.get(0), moreInfo = moreInfo) }
     }
 }
+
+val ValidMeesage = "```json\n" +
+        "{\n" +
+        "    \"prediction\": {\n" +
+        "        \"date\": \"2025-06-23\",\n" +
+        "        \"pm10\": {\n" +
+        "            \"value\": 9,\n" +
+        "            \"confidence\": 75,\n" +
+        "            \"trend\": \"stable\",\n" +
+        "            \"expected_range\": [7, 12]\n" +
+        "        },\n" +
+        "        \"pm25\": {\n" +
+        "            \"value\": 5,\n" +
+        "            \"confidence\": 80,\n" +
+        "            \"trend\": \"stable\",\n" +
+        "            \"expected_range\": [4, 7]\n" +
+        "        },\n" +
+        "        \"temperature\": {\n" +
+        "            \"value\": 26,\n" +
+        "            \"confidence\": 85,\n" +
+        "            \"trend\": \"stable\",\n" +
+        "            \"expected_range\": [25, 27]\n" +
+        "        },\n" +
+        "        \"humidity\": {\n" +
+        "            \"value\": 35,\n" +
+        "            \"confidence\": 80,\n" +
+        "            \"trend\": \"stable\",\n" +
+        "            \"expected_range\": [32, 40]\n" +
+        "        },\n" +
+        "        \"noise\": {\n" +
+        "            \"value\": 75,\n" +
+        "            \"confidence\": 70,\n" +
+        "            \"trend\": \"stable\",\n" +
+        "            \"expected_range\": [72, 78]\n" +
+        "        }\n" +
+        "    },\n" +
+        "    \"key_factors\": [\n" +
+        "        \"Recent drop in PM levels correlated with lower humidity\",\n" +
+        "        \"Stable temperature and humidity suggest consistent air quality\",\n" +
+        "        \"No significant weekday/weekend patterns observed in the data\",\n" +
+        "        \"No apparent lag effects from previous days\"\n" +
+        "    ],\n" +
+        "    \"health_implications\": \"Air quality is expected to be good with PM2.5 and PM10 levels well below concerning thresholds. No significant health risks anticipated.\",\n" +
+        "    \"model_notes\": \"Assumed linear relationships between PM levels and meteorological factors. Missing data for 2025-06-22 was compensated by using the average of the surrounding days. Limited to 30 days of data, which may not capture longer-term trends or seasonal variations.\"\n" +
+        "}\n" +
+        "```"

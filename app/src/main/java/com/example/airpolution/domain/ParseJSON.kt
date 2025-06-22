@@ -5,12 +5,21 @@ import com.google.gson.JsonObject
 
 object ParseJSON {
 
+    private fun validString(jsonString: String): String {
+        val list = jsonString.split("\n")
+        val newList = list.subList(1, list.size - 1)
+        val sb = StringBuilder()
+        for (s in newList) {
+            sb.append(s)
+        }
+        return sb.toString()
+    }
+
     fun parsePredictionResponse(jsonString: String?): List<String> {
-        if (jsonString == null || jsonString.isEmpty() || jsonString.isBlank()) return emptyList()
-        val newJSON=jsonString.replace("json","")
-        val newJSON2=newJSON.replace("```","\"\"\"")
+        if (jsonString.isNullOrEmpty() || jsonString.isBlank()) return emptyList()
+        val s = validString(jsonString)
         val gson = Gson()
-        val jsonObject = gson.fromJson(newJSON2, JsonObject::class.java)
+        val jsonObject = gson.fromJson(s.trimIndent(), JsonObject::class.java)
         val prediction = jsonObject.getAsJsonObject("prediction")
         val keyFactors = jsonObject.getAsJsonArray("key_factors")
         val healthImplications = jsonObject.get("health_implications").asString

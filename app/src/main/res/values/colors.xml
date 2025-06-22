@@ -15,4 +15,7 @@
     <color name="yellow">#FFC107</color>
     <color name="icon_tint_color">#333333</color>
     <color name="gray_dialog_display">#808080</color>
+    <color name="button_unselected">#EB022B</color> <!-- Primary color -->
+    <color name="button_selected">#612F34</color>  <!-- Darker shade -->
+    <color name="button_text_color">#FFFFFF</color> <!-- White text -->
 </resources>

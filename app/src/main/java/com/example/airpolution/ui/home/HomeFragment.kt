@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -81,10 +82,32 @@ class HomeFragment : Fragment() {
                     binding.homeText.text = state.text
                     updateSpinner(state.cities)
                     adapter.updateData(state.airMeasurements)
+                    updateButtons(state.period)
                 }
             }
         }
         return root
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun updateButtons(selectedPeriod: Int) {
+        val buttonPeriodMap = mapOf(
+            binding.btnToday to 0,
+            binding.btnyesterday to -1,
+            binding.btnTwoDaysBefore to -2,
+            binding.btnWeekly to 1,
+            binding.btnMonthl to 2
+        )
+        val color1 = com.example.airpolution.R.color.button_selected
+        val color2 = com.example.airpolution.R.color.button_unselected
+
+        buttonPeriodMap.forEach { (button, period) ->
+            val isSelected = (selectedPeriod == period)
+            button.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                if (isSelected) color1 else color2
+            )
+        }
     }
 
     private fun updateSpinner(cities: List<String>) {

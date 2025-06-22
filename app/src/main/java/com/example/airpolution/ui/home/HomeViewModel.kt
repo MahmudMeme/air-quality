@@ -48,6 +48,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
     private fun fetchCurrentAirValues() {
         viewModelScope.launch {
             try {

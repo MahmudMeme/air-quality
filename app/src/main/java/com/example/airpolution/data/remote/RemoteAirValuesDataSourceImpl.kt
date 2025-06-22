@@ -4,6 +4,7 @@ import com.example.airpolution.data.remote.deepseek.DeepSeekApi
 import com.example.airpolution.data.remote.deepseek.DeepSeekRequest
 import com.example.airpolution.data.remote.deepseek.Message
 import com.example.airpolution.data.remote.deepseek.PredictionResult
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 class RemoteAirValuesDataSourceImpl @Inject constructor(
@@ -42,10 +43,12 @@ class RemoteAirValuesDataSourceImpl @Inject constructor(
         val request = DeepSeekRequest(messages = messages)
 
         return try {
-            val response = airValuesDBApi.getPrediction(
-                auth = "Bearer ${DeepSeekApi.API_KEY}",
-                request = request
-            )
+            val response = withTimeout(35_000) {
+                airValuesDBApi.getPrediction(
+                    auth = "Bearer ${DeepSeekApi.API_KEY}",
+                    request = request
+                )
+            }
 
             if (response.isSuccessful) {
                 response.body()?.choices?.firstOrNull()?.message?.content?.let {
@@ -60,5 +63,3 @@ class RemoteAirValuesDataSourceImpl @Inject constructor(
         }
     }
 }
-
-// Custom exception class
