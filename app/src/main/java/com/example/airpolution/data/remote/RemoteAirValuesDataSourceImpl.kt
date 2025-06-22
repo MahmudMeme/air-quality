@@ -3,6 +3,7 @@ package com.example.airpolution.data.remote
 import com.example.airpolution.data.remote.deepseek.DeepSeekApi
 import com.example.airpolution.data.remote.deepseek.DeepSeekRequest
 import com.example.airpolution.data.remote.deepseek.Message
+import com.example.airpolution.data.remote.deepseek.PredictionResult
 import javax.inject.Inject
 
 class RemoteAirValuesDataSourceImpl @Inject constructor(
@@ -27,7 +28,7 @@ class RemoteAirValuesDataSourceImpl @Inject constructor(
         throw Exception("padna vo retrofit air values funkcija za podatoci od vcera")
     }
 
-    override suspend fun predict(prompt: String): String? {
+    override suspend fun predict(prompt: String): PredictionResult {
         val messages = listOf(
             Message(
                 role = "system",
@@ -40,18 +41,24 @@ class RemoteAirValuesDataSourceImpl @Inject constructor(
         )
         val request = DeepSeekRequest(messages = messages)
 
-        try {
-            val response =
-                airValuesDBApi.getPrediction("Bearer ${DeepSeekApi.API_KEY}", request)
+        return try {
+            val response = airValuesDBApi.getPrediction(
+                auth = "Bearer ${DeepSeekApi.API_KEY}",
+                request = request
+            )
 
             if (response.isSuccessful) {
-                val predictionJson = response.body()?.choices?.firstOrNull()?.message?.content
-                return predictionJson
+                response.body()?.choices?.firstOrNull()?.message?.content?.let {
+                    PredictionResult.Success(it)
+                } ?: PredictionResult.Error("Empty response from API")
             } else {
-                throw Exception("API request failed: ${response.errorBody()?.string()}")
+                val error = response.errorBody()?.string() ?: "Unknown error"
+                PredictionResult.Error("API error: $error")
             }
         } catch (e: Exception) {
-            throw Exception("Prediction failed: ${e.message}")
+            PredictionResult.Error("Network error: ${e.message}")
         }
     }
 }
+
+// Custom exception class

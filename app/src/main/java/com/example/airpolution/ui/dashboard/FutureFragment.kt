@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.airpolution.BuildConfig
 import com.example.airpolution.databinding.FragmentFutureBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -34,6 +35,8 @@ class FutureFragment : Fragment() {
 
 
         binding.btnPredict.setOnClickListener {
+//            val key=BuildConfig.API_KEY
+//            binding.textDashboard.text=key
             futureViewModel.loadData()
         }
 

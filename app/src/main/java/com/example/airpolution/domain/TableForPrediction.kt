@@ -69,13 +69,31 @@ object TableForPrediction {
         {
             "prediction": {
                 "date": "tomorrow's date in YYYY-MM-DD",
+                "pm10": {
+                    "value": predictedValue,
+                    "confidence": 0-100,
+                    "trend": "up/down/stable",
+                    "expected_range": [min, max]
+                },
                 "pm25": {
                     "value": predictedValue,
                     "confidence": 0-100,
                     "trend": "up/down/stable",
                     "expected_range": [min, max]
                 },
-                "pm10": {
+                "temperature": {
+                    "value": predictedValue,
+                    "confidence": 0-100,
+                    "trend": "up/down/stable",
+                    "expected_range": [min, max]
+                },
+                "humidity": {
+                    "value": predictedValue,
+                    "confidence": 0-100,
+                    "trend": "up/down/stable",
+                    "expected_range": [min, max]
+                },
+                "noise": {
                     "value": predictedValue,
                     "confidence": 0-100,
                     "trend": "up/down/stable",

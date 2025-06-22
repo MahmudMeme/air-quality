@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airpolution.data.Repository
 import com.example.airpolution.data.remote.AverageDataResponse
+import com.example.airpolution.data.remote.deepseek.PredictionResult
+import com.example.airpolution.domain.ParseJSON
 import com.example.airpolution.domain.TableForPrediction
 import com.example.airpolution.ui.dashboard.datesBuilder.DateForPrediction
 import com.example.airpolution.ui.home.singleton.CityTemp
@@ -83,13 +85,25 @@ class FutureViewModel @Inject constructor(private val repository: Repository) : 
             listNoise
         )
 
-        val result = repository.getPrediction(promptMessage)
+        val prediction = repository.getPrediction(promptMessage)
+        when (prediction) {
+            is PredictionResult.Success -> {
+                val data = prediction.data
+                val result = ParseJSON.parsePredictionResponse(data)
+                _uiState.update { it.copy(text = result.get(0)) }
+            }
 
-//        val sb: StringBuilder = StringBuilder()
-//        for (response in listResponsePM10) {
-//            sb.append(" ${response.stamp} ${response.type} ${response.value} \n")
+            is PredictionResult.Error -> {
+                _uiState.update { it.copy(text = prediction.message) }
+            }
+        }
+
+//        val result = ParseJSON.parsePredictionResponse(prediction)
+//        if (result.isEmpty()) {
+//            val info = "greks vo rezultatot od promtot"
+//            _uiState.update { it.copy(text = info) }
 //        }
-//        _uiState.update { it.copy(text = sb.toString()) }
-        _uiState.update { it.copy(text = result.toString()) }
+//
+//        _uiState.update { it.copy(text = result.get(0)) }
     }
 }

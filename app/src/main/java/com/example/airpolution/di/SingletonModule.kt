@@ -13,8 +13,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -31,7 +33,14 @@ abstract class SingletonModule {
         @Provides
         @Singleton
         fun provideOkHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder().build()
+            return OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)  // Connection timeout
+                .readTimeout(30, TimeUnit.SECONDS)     // Read timeout
+                .writeTimeout(30, TimeUnit.SECONDS)    // Write timeout
+                .addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+                .build()
         }
 
         @Provides

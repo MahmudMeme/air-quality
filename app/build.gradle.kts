@@ -23,16 +23,33 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", "\"${properties["DEEPSEEK_API_KEY"]}\"")
-        buildConfigField("String", "DAPI_KEY", "\"${System.getenv("DEEPSEEK_API_KEY")}\"")
+//        buildConfigField("String", "API_KEY", "\"${properties["DEEPSEEK_API_KEY"]}\"")
+//        buildConfigField("String", "DAPI_KEY", "\"${System.getenv("DEEPSEEK_API_KEY")}\"")
     }
 
+    val localProperties = Properties()
+    val localPropertiesFile = File(rootDir, "secret.properties")
+    if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
+        localPropertiesFile.inputStream().use {
+            localProperties.load(it)
+        }
+    }
+//    }
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+
+            )
+            buildConfigField(
+                "String", "API_KEY", localProperties.getProperty("DEEPSEEK_API_KEY")
+            )
+        }
+        debug {
+            buildConfigField(
+                "String", "API_KEY", localProperties.getProperty("DEEPSEEK_API_KEY")
             )
         }
     }
@@ -46,6 +63,7 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        resValues = true
     }
 }
 
