@@ -1,7 +1,7 @@
 package com.example.airpolution.data.local
 
 interface LocalDataSource {
-    suspend fun getDefaultCityFromSp(): String?
+    suspend fun getDefaultCityFromSp(): String
     suspend fun setDefaultCity(city: String)
     suspend fun getAllCitiesFromStringsXML():List<String>
 }

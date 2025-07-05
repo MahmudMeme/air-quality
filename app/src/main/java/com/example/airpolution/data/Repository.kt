@@ -5,6 +5,7 @@ import com.example.airpolution.data.remote.AirQualityResponse
 import com.example.airpolution.data.remote.AverageDataResponse
 import com.example.airpolution.data.remote.RemoteAirValuesDataSource
 import com.example.airpolution.data.remote.deepseek.PredictionResult
+import com.example.airpolution.ui.home.singleton.CityTemp
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,11 +14,11 @@ class Repository @Inject constructor(
     private val remoteAirValuesDataSource: RemoteAirValuesDataSource,
     private val localDataSource: LocalDataSource,
 ) {
-    suspend fun getAirValues(url: String): AirQualityResponse {
-        return remoteAirValuesDataSource.getAirValues(url)
+    suspend fun getAirValues(city: String): AirQualityResponse {
+        return remoteAirValuesDataSource.getAirValues(city)
     }
 
-    suspend fun getDefaultCityFromSp(): String? {
+    suspend fun getDefaultCityFromSp(): String {
         return localDataSource.getDefaultCityFromSp()
     }
 
@@ -30,7 +31,8 @@ class Repository @Inject constructor(
     suspend fun getAllCitiesFromStringsXML(): List<String> {
         return localDataSource.getAllCitiesFromStringsXML()
     }
-    suspend fun getPrediction(prompt: String): PredictionResult {
-        return remoteAirValuesDataSource.predict(prompt)
+    suspend fun getPrediction(): PredictionResult {
+        val city = CityTemp.getCity() ?: getDefaultCityFromSp()
+        return remoteAirValuesDataSource.predict(city)
     }
 }

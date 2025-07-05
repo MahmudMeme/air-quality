@@ -6,9 +6,9 @@ import com.example.airpolution.R
 import javax.inject.Inject
 
 class LocalDataSourceImpl @Inject constructor(private val context: Context) : LocalDataSource {
-    override suspend fun getDefaultCityFromSp(): String? {
+    override suspend fun getDefaultCityFromSp(): String {
         val sp = context.getSharedPreferences("airCity", MODE_PRIVATE)
-        val city = sp.getString("defaultCity", null)
+        val city = sp.getString("defaultCity", null) ?: DEFAULT_CIY
         return city
     }
 
@@ -21,5 +21,9 @@ class LocalDataSourceImpl @Inject constructor(private val context: Context) : Lo
 
     override suspend fun getAllCitiesFromStringsXML(): List<String> {
         return context.resources.getStringArray(R.array.cities_list).toList()
+    }
+
+    companion object {
+        private const val DEFAULT_CIY = "skopje"
     }
 }

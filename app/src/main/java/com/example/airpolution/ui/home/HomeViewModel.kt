@@ -54,8 +54,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val city = CityTemp.getCity() ?: repository.getDefaultCityFromSp()
                 city?.let {
-                    val url = buildUrlForCity(city)
-                    val response = repository.getAirValues(url)
+                    val response = repository.getAirValues(city)
                     val values = response.values
 
                     val text = "now in $city"
@@ -81,11 +80,6 @@ class HomeViewModel @Inject constructor(
             state.copy(airMeasurements = listCards)
         }
     }
-
-    private fun buildUrlForCity(cityName: String): String {
-        return "https://${cityName}.pulse.eco/rest/overall"
-    }
-
 
     fun handleCitySelected(position: Int) {
         val selectedCityName = uiState.value.cities[position]
