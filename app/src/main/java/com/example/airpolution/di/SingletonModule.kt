@@ -5,6 +5,7 @@ import android.content.Context
 import com.example.airpolution.data.local.LocalDataSource
 import com.example.airpolution.data.local.LocalDataSourceImpl
 import com.example.airpolution.data.remote.AirValuesDBApi
+import com.example.airpolution.data.remote.DeepseekApi
 import com.example.airpolution.data.remote.RemoteAirValuesDataSource
 import com.example.airpolution.data.remote.RemoteAirValuesDataSourceImpl
 import dagger.Binds
@@ -18,7 +19,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -45,7 +45,8 @@ abstract class SingletonModule {
 
         @Provides
         @Singleton
-        fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        @RetrofitDeepseek
+        fun provideDeepseekRetrofit(okHttpClient: OkHttpClient): Retrofit {
             val baseUrl = "https://api.deepseek.com/v1/"
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -56,8 +57,26 @@ abstract class SingletonModule {
 
         @Provides
         @Singleton
-        fun provideAirValuesDBApi(retrofit: Retrofit): AirValuesDBApi {
+        @RetrofitMeasurements
+        fun provideMeasurementsRetrofit(okHttpClient: OkHttpClient): Retrofit {
+            val baseUrl = "https://pulse.eco/"
+            return Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build()
+        }
+
+        @Provides
+        @Singleton
+        fun provideAirValuesDBApi(@RetrofitMeasurements retrofit: Retrofit): AirValuesDBApi {
             return retrofit.create(AirValuesDBApi::class.java)
+        }
+
+        @Provides
+        @Singleton
+        fun provideDeepseekApi(@RetrofitDeepseek retrofit: Retrofit): DeepseekApi {
+            return retrofit.create(DeepseekApi::class.java)
         }
     }
 
